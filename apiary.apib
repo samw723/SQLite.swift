@@ -1,0 +1,1443 @@
+FORMAT: 1A
+HOST: https://api.mig.me/
+
+# accounts.mig.me
+Facade to expose various Migme backend systems as clean HTTP APIs.
+
+# Group OAuth
+## Login [/oauth/token]
+### Get an access token [POST]
+
++ Attributes
+
+    + client_id (string, required) - Client ID of the connecting app
+    + grant_type (string, required) - OAuth method
+    + scope (string, required) - Requested access scopes (comma separated)
+    + username (string, required) - Migme account identifier
+    + password (string, required) - Password to the Migme account
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "client_id": "3jkbsdj34234jnsdfsjk23",
+                "grant_type": "password",
+                "scope": "test-scope",
+                "username": "migmetrue",
+                "password": "ten20304050"
+            }
+
++ Response 200 (application/json)
+
+            {
+                "userid": "11341757",
+                "expires_in": 31536000,
+                "access_token": "2ae3670340f449d886bb6c9b404eb64f690f0441914d43a2914260f05f6273ef"
+            }
+
+# Group Captcha
+## Create captcha [/captcha{?type}]
+Not implemented
+### Get a captcha code [GET]
+
++ Parameters
+
+    + type (string, optional) - type of captcha
+        + Default: `image`
+
+        + Members
+            + `image`
+            + `speech`
+            + `recaptcha`
+            + `general-knowledge-question`
+
++ Response 200 (application/json)
+
+        {
+          "captcha_session":"d6529633b262b8879b83b7a32bdb2944",
+          "captcha":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC8AAAARCAMAAAB6iQVDAAAACVBMVEX09PQAAAD///+j11k+AAAAjUlEQVR42o2SQQ7EMAgDGf//0XvAXQehKuVQNXhinLRVpfpQCqU7q5PRlTV+5ZudUcLT5RcZntvXAEiIAXu5+M0aVhCgcL8f0JqDIfH0QOnb5695b9Ng3vPPmSQxEpNXx+51jJ+bMpxAWDxOR6Yw+GDkyGM029+fycYxUeDhb/jln1TquGMru7ZNlGv9AKoZAfeKFgeRAAAAAElFTkSuQmCC"
+        }
+
+
+# Group Users
+Creating and getting information about users
+## Users [/users]
+Not implemented
+### Create a new user [POST]
+Requires getting a captcha code first (only for Web)
+This will send a verification email.
+
++ Attributes
+
+    + email (string, required) - User's email address
+    + username (string, required) - Username for user
+    + password (string, required) - Password for user
+    + country_code (string, required) - Two (2) character country ISO code
+    + captcha (string, required) - Answer to captcha code (only web)
+    + captcha_session (string, required) - Captcha session (only web)
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
+    + Body
+
+            {
+              "email": "ssgjk.l@gmail.com",
+              "username": "migmetrue",
+              "password": "ten20304050",
+              "country_code": "SG",
+              "captcha": "BHQ2",
+              "captcha_session": "d6529633b262b8879b83b7a32bdb2944"
+            }
+
++ Response 200 (application/json)
+
+            {
+                "id": 123456789,
+                "username": "foobar",
+                "date_registered": "2015-02-25",
+                "mig_level": 1,
+                "mig_bot_image": "rank-egg-1",
+                "display_picture_type": "avatar",
+                "labels": {
+                    "map": {}
+                },
+                "total_friends": 0,
+                "total_followers": 0,
+                "total_following": 0,
+                "email": "example@example.com",
+                "email_verified": false,
+                "avatar": {
+                    "full": "http://img.mig.me/avatar/migmetrue",
+                    "head": "http://img.mig.me/a/migmetrue"
+                },
+                "profile_picture": "http://img.mig.me/u/migmetrue",
+                "country": "Singapore"
+            }
+
+### Verify a user in future [PUT]
+Not implemented
++ Attributes
+
+  + registration_token (string, required) - Registration token that comes from the verification email
+
++ Request (application/json)
+
+    + Body
+
+            {
+              "registration_token": "hsY574h7uOJrHFoqrjtZO9Aw70hhndCOn3Ju41UGaw"
+            }
+
++ Response 200 (application/json)
+
+            {
+                "id": 123456789,
+                "username": "migmetrue",
+                "date_registered": "2016-09-23",
+                "mig_level": 1,
+                "mig_bot_image": "rank-egg-1",
+                "display_picture_type": "avatar",
+                "labels": {
+                    "map": {}
+                },
+                "total_friends": 0,
+                "total_followers": 0,
+                "total_following": 0,
+                "email": "ssjkl@gmail.com",
+                "email_verified": true,
+                "avatar": {
+                    "full": "http://img.mig.me/avatar/migmetrue",
+                    "head": "http://img.mig.me/a/migmetrue"
+                },
+                "profile_picture": "http://img.mig.me/u/migmetrue",
+                "country": "indonesia"
+            }
+
+## Verify [/verify]
+### Verify a user [POST]
+Not implemented
++ Attributes
+
+  + registration_token (string, required) - Registration token that comes from the verification email
+
++ Request
+
+    + Body
+
+            {
+                "registration_token": "hsY574h7uOJrHFoqrjtZO9Aw70hhndCOn3Ju41UGaw"
+            }
+
++ Response 200 (application/json)
+
+            {}
+
+## Profile [/users/{id}]
+### Get a user's details [GET]
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "id": 123456789,
+                "username": "exampleuser",
+                "date_registered": "2015-02-25",
+                "mig_level": 1,
+                "mig_bot_image": "rank-egg-1",
+                "display_picture_type": "avatar",
+                "labels": {
+                    "map": {}
+                },
+                "total_friends": 0,
+                "total_followers": 0,
+                "total_following": 8,
+                "email": "example@example.com",
+                "email_verified": true,
+                "avatar": {
+                    "full": "http://img.mig.me/avatar/exampleuser",
+                    "head": "http://img.mig.me/a/exampleuser"
+                },
+                "profile_picture": "http://img.mig.me/u/exampleuser",
+                "country": "Singapore"
+            }
+
+## Friends [/users/{id}/friends]
+### Get user's friends [GET]
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "friends": [
+
+                ]
+            }
+
++ Response 403 (application/json)
+
+            {
+                "error": {
+                    "code": 403,
+                    "type": "Forbidden",
+                    "message": "Unorthorised access"
+                }
+            }
+
+## Followers [/users/{id}/followers]
+### Get user's followers [GET]
+Not implemented
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "followers": [
+
+                ]
+            }
+
++ Response 403 (application/json)
+
+            {
+                "error": {
+                    "code": 403,
+                    "type": "Forbidden",
+                    "message": "Unorthorised access"
+                }
+            }
+
+## Following [/users/{id}/following]
+### Get who the user is following [GET]
+Not implemented
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "following": [
+
+                ]
+            }
+
++ Response 403 (application/json)
+
+            {
+                "error": {
+                    "code": 403,
+                    "type": "Forbidden",
+                    "message": "Unorthorised access"
+                }
+            }
+
+
+## Stories [/users/{id}/stories]
+### Get a user's stories [GET]
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "stories": [
+
+                ]
+            }
+
++ Response 403 (application/json)
+
+            {
+                "error": {
+                    "code": 403,
+                    "message": "Unorthorised access"
+                }
+            }
+
+
+# Group Current User
+
+## Current User [/me]
+### Get Current user's profile [GET]
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "id": "123456789",
+                "username": "exampleuser",
+                "date_registered": "2015-02-25",
+                "mig_level": 1,
+                "mig_bot_image": "rank-egg-1",
+                "display_picture_type": "avatar",
+                "labels": {
+                    "map": {}
+                },
+                "total_friends": 0,
+                "total_followers": 0,
+                "total_following": 8,
+                "email": "example@example.com",
+                "email_verified": true,
+                "avatar": {
+                    "full": "http://img.mig.me/avatar/exampleuser",
+                    "head": "http://img.mig.me/a/exampleuser"
+                },
+                "profile_picture": "http://img.mig.me/u/exampleuser",
+                "country": "Singapore"
+            }
+
++ Response 403 (application/json)
+
+            {
+                "error": {
+                    "code": 403,
+                    "type": "Forbidden",
+                    "message": "Unorthorised access"
+                }
+            }
+
+### Update current user's profile [PUT]
+Not implemented
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
+    + Body
+
+            {
+                "display_picture_type": "profile"
+            }
+
++ Response 200 (application/json)
+
+            {
+                "id": "123456789",
+                "username": "exampleuser",
+                "date_registered": "2015-02-25",
+                "mig_level": 1,
+                "mig_bot_image": "rank-egg-1",
+                "display_picture_type": "avatar",
+                "labels": {
+                    "map": {}
+                },
+                "total_friends": 0,
+                "total_followers": 0,
+                "total_following": 8,
+                "email": "example@example.com",
+                "email_verified": true,
+                "avatar": {
+                    "full": "http://img.mig.me/avatar/exampleuser",
+                    "head": "http://img.mig.me/a/exampleuser"
+                },
+                "profile_picture": "http://img.mig.me/u/exampleuser",
+                "country": "Singapore"
+            }
+
+## Friends [/me/friends]
+### Get current user's friends [GET]
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "friends": [
+
+                ]
+            }
+
++ Response 403 (application/json)
+
+            {
+                "error": {
+                    "code": 403,
+                    "type": "Forbidden",
+                    "message": "Unorthorised access"
+                }
+            }
+
+## Followers [/me/followers]
+### Get user's followers [GET]
+Not implemented
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "followers": [
+
+                ]
+            }
+
++ Response 403 (application/json)
+
+            {
+                "error": {
+                    "code": 403,
+                    "type": "Forbidden",
+                    "message": "Unorthorised access"
+                }
+            }
+
+## Following [/me/following]
+### Get who the user is following [GET]
+Not implemented
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "following": [
+
+                ]
+            }
+
++ Response 403 (application/json)
+
+            {
+                "error": {
+                    "code": 403,
+                    "type": "Forbidden",
+                    "message": "Unorthorised access"
+                }
+            }
+
+### Follow a user [POST]
+Not implemented
++ Attributes
+    + id (string, required) - User Id of user to follow
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
+    + Body
+
+            {
+              "id": "123456789"
+            }
+
++ Response 200 (application/json)
+
+            {
+                "following": [
+
+                ]
+            }
+
+
+# Group Wallet
+## Wallet [/wallet]
+### Get current user's credit [GET]
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "balance": 119.02,
+                "currency": {
+                    "symbol": "S$",
+                    "exchange_rate": 1.0818,
+                    "name": "Singapore Dollars",
+                    "last_updated": "2014-12-15T00:00:00.000Z",
+                    "code":"SGD"
+                }
+            }
+
+### Bill the current user [POST]
+
++ Attributes
+
+    + reference (string, required) - Reference code for future tracking
+    + description (string, required) - User visible description that they will see in their billing history
+    + currency (string, required) - Three letter currency code, e.g. USD, SGD, AUD
+    + amount (number, required) - Value to deduct from the user, in dollars
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
+    + Body
+
+            {
+                "reference": "PS4276e4",
+                "description": "Bought a happy sticker",
+                "currency": "SGD",
+                "amount": 0.03
+            }
+
++ Response 200 (application/json)
+
+            {
+                "id": 1427283043
+            }
+
+### Add money to user's wallet [PUT]
+
++ Attributes
+
+    + currency (string, required) - Three letter currency code, e.g. USD, SGD, AUD
+    + amount (number, required) - Value to add to the user's wallet, in dollars
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
+    + Body
+
+            {
+                "currency": "SGD",
+                "amount": 5.00
+            }
+
++ Response 200 (application/json)
+
+            {
+                "balance": 119.02,
+                "currency": {
+                    "symbol": "S$",
+                    "exchange_rate": 1.0818,
+                    "name": "Singapore Dollars",
+                    "last_updated": "2014-12-15T00:00:00.000Z",
+                    "code":"SGD"
+                }
+            }
+
+
+# Group Store
+## Store [/store{?category,limit,sort_by,sort_order,featured,offset}]
+### Get Items from the Store [GET]
+Not implemented
+
++ Parameters
+
+    + category (string, required) - Category to get
+        + Members
+            - stickers
+            - gifts
+            - emoticons
+            - avatar
+    + limit (number, optional) - Total number of results to return
+        + Default `100`
+    + offset (number, optional) - Offset in results
+        + Default `0`
+    + sort_by (string, optional) - What to sort by
+        + Members
+            - date
+            - total_sold
+            - featured
+            - price
+            - name
+    + sort_order (string, optional) - Sorting order
+        + Members
+            - desc
+            - asc
+    + featured (boolean, optional) - Get featured items
+        + Default `false`
+
+
++ Response 200 (application/json)
+
+            {
+                "items": [
+
+                ]
+            }
+
+
+# Group Search
+## Search [/search{?q,type,limit,cursor}]
+### Search for something [GET]
+Not implemented
+
++ Parameters
+
+    + q (string, required) - Query to search for
+    + type (string, optional) - Type of search
+        + Members
+            - users
+            - stories
+    + limit (number, optional) - Total number of results to return
+        + Default: `50`
+    + cursor (string, optional) - Cursor in search results
+
++ Response 200 (application/json)
+
+            {
+                "users": [],
+                "stories": [],
+                "next_cursor": "1323935095007282836",
+                "previous_cursor": "0"
+            }
+
+
+# Group Stories
+## Get [/stories{?user_id,limit,cursor}]
+Not implemented
+### Get Stories [GET]
+
++ Parameters
+    + user_id (string, optional) - Id of user to get stories from
+    + limit (number, optional) - Limit of stories to get
+    + cursor (string, optional) - Cursor in results
+
++ Response 200 (application/json)
+
+            {
+                "stories": [
+
+                ],
+                "next_cursor": 3943895349503,
+                "previous_cursor": 0
+            }
+
+## Create [/stories]
+### Create a new story [POST]
+
++ Attributes
+    + body (string, required) - Text to be displayed in story (Max 300 characters)
+    + image (optional) - File to be uploaded
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
+    + Body
+
+            {
+                "body": "This is the message to be posted",
+                "image": "IMAGE_TO_BE_UPLOADED"
+            }
+
+
++ Response 200 (application/json)
+
+            {
+                "id": "1957116031412914070437"
+            }
+
+## Single Story [/stories/{id}{?limit_replies,limit_reshares,tag_username_list_limit}]
+### Get Story [GET]
+
++ Parameters
+
+    + id (string, required) - Id of story
+    + limit_replies (number, optional) - Max number of replies to return
+    + limit_reshares (number, optional) - Max number of reshares to return
+    + tag_username_list_limit (number, optional) - Max number of usernames tagged to return
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "body": "I put a smile on someone's face today! I sent a Flower gift to  @wilson_g.b http://mig.me/images/emoticons/virtualgifts/flower_64x64.png",
+                "application": "web",
+                "tag_entity": {
+                    "count": [],
+                    "usernames": [],
+                    "expiry": -1,
+                    "total_count": 0,
+                    "criteria_id": 2,
+                    "requesting_user_tag_id": 0
+                },
+                "status": "active",
+                "privacy": "EVERYONE",
+                "reply_permission": "EVERYONE",
+                "states": [
+                    {
+                        "type": "reshared_post",
+                        "post_state_id": "201651042-1435113901132"
+                    }
+                ],
+                "links": [
+                    {
+                        "title": "",
+                        "url": "http://mig.me/images/emoticons/virtualgifts/flower_64x64.png"
+                    }
+                ],
+                "type": "link",
+                "body_suffix": "",
+                "id": "201651042-1435113901132",
+                "timestamp": "2015-06-24T02:45:01.132Z",
+                "originality": "original",
+                "author": {
+                    "id": "201651042",
+                    "username": "lizlizzey",
+                    "_privacy": {
+                        "feed": 1,
+                        "chat": 2
+                    },
+                    "alias": "lizlizzey",
+                    "labels": {
+                        "color": "F39426",
+                        "admin": "A"
+                    },
+                    "display_picture_type": "avatar"
+                },
+                "permalink": {
+                    "wap": "http://mig.me/wap/u/lizlizzey/post/201651042-1435113901132",
+                    "midlet": "http://mig.me/midlet/u/lizlizzey/post/201651042-1435113901132",
+                    "web": "http://mig.me/u/lizlizzey/post/201651042-1435113901132"
+                },
+                "source": "migme",
+                "replies": {
+                    "total": 2,
+                    "replies": [
+                        {
+                            "root_post": {
+                                "id": "201651042-1435113901132"
+                            },
+                            "body": "catch me n.room:   lizzie chat 😜😍😍😋",
+                            "application": "android",
+                            "status": "active",
+                            "privacy": "EVERYONE",
+                            "states": [
+                                {
+                                    "type": "reshared_post",
+                                    "post_state_id": "179001349-1435129325864"
+                                },
+                                {
+                                    "type": "inclined_parent_reply",
+                                    "post_state_id": "179001349-1435129325865"
+                                }
+                            ],
+                            "reply_permission": "EVERYONE",
+                            "links": [],
+                            "show_reply_in_feed": false,
+                            "type": "text",
+                            "body_suffix": "",
+                            "id": "179001349-1435129325865",
+                            "timestamp": "2015-06-24T07:02:05.865Z",
+                            "originality": "reply",
+                            "author": {
+                                "id": "179001349",
+                                "username": "wilson_g.b",
+                                "_privacy": {
+                                    "feed": 1,
+                                    "chat": 1
+                                },
+                                "labels": {
+                                    "color": "FF0000",
+                                    "merchant": "M",
+                                    "admin": "GA"
+                                },
+                                "display_picture_type": "avatar"
+                            },
+                            "parent_post": {
+                                "id": "201651042-1435113901132"
+                            },
+                            "source": "migme",
+                            "is_watching": 0
+                        },
+                        {
+                            "root_post": {
+                                "id": "201651042-1435113901132"
+                            },
+                            "body": "😜😍😍😋thanks sis",
+                            "application": "android",
+                            "status": "active",
+                            "privacy": "EVERYONE",
+                            "states": [
+                                {
+                                    "type": "reshared_post",
+                                    "post_state_id": "179001349-1435128743690"
+                                },
+                                {
+                                    "type": "inclined_parent_reply",
+                                    "post_state_id": "179001349-1435128743691"
+                                }
+                            ],
+                            "reply_permission": "EVERYONE",
+                            "links": [],
+                            "show_reply_in_feed": false,
+                            "type": "text",
+                            "body_suffix": "",
+                            "id": "179001349-1435128743691",
+                            "timestamp": "2015-06-24T06:52:23.691Z",
+                            "originality": "reply",
+                            "author": {
+                                "id": "179001349",
+                                "username": "wilson_g.b",
+                                "_privacy": {
+                                    "feed": 1,
+                                    "chat": 1
+                                },
+                                "labels": {
+                                    "color": "FF0000",
+                                    "merchant": "M",
+                                    "admin": "GA"
+                                },
+                                "display_picture_type": "avatar"
+                            },
+                            "parent_post": {
+                                "id": "201651042-1435113901132"
+                            },
+                            "source": "migme",
+                            "is_watching": 0
+                        }
+                    ]
+                },
+                "reshares": {
+                    "total": 1,
+                    "reshares": [
+                        {
+                            "root_post": {
+                                "id": "201651042-1435113901132"
+                            },
+                            "body": "😜😍😍😋thanks thanks sis @lizlizzey",
+                            "application": "android",
+                            "status": "active",
+                            "privacy": "EVERYONE",
+                            "states": [
+                                {
+                                    "type": "reshared_post",
+                                    "post_state_id": "179001349-1435128827123"
+                                }
+                            ],
+                            "reply_permission": "EVERYONE",
+                            "links": [],
+                            "type": "text",
+                            "body_suffix": "",
+                            "id": "179001349-1435128827123",
+                            "timestamp": "2015-06-24T06:53:47.123Z",
+                            "originality": "reshare",
+                            "author": {
+                              "id": "179001349",
+                              "username": "wilson_g.b",
+                              "_privacy": {
+                                  "feed": 1,
+                                  "chat": 1
+                              },
+                              "labels": {
+                                  "color": "FF0000",
+                                  "merchant": "M",
+                                  "admin": "GA"
+                              },
+                              "display_picture_type": "avatar"
+                            },
+                            "parent_post": {
+                                "id": "201651042-1435113901132"
+                            },
+                            "source": "migme",
+                            "is_watching": 0
+                        }
+                    ]
+                },
+                "mentions": [
+                  {
+                  "id": "179001349",
+                  "username": "wilson_g.b",
+                  "_privacy": {
+                      "feed": 1,
+                      "chat": 1
+                  },
+                  "labels": {
+                      "color": "FF0000",
+                      "merchant": "M",
+                      "admin": "GA"
+                  },
+                  "display_picture_type": 1
+                  }
+                ],
+                "is_watching": 0,
+                "mime_data": "[{\"text/rtf\":\"{\\\"text\\\":\\\"I sent a Flower gift to  @wilson_g.b  \\\"}\"},{\"application/vnd.migme.gift\":\"{\\\"sender\\\":\\\"lizlizzey\\\",\\\"message\\\":\\\"\\\",\\\"name\\\":\\\"Flower\\\",\\\"storeItemId\\\":4,\\\"type\\\":\\\"gift\\\",\\\"recipient\\\":\\\" wilson_g.b\\\",\\\"hotkey\\\":\\\"vg_flower\\\"}\"}]",
+                "mime_type": "multipart/vnd.mig.container+json"
+            }
+
+# Group Invite
+
+## Invite [/invite]
+### Send an invite via email [POST]
+
++ Attributes
+    + invite (string, required) - Comma separated string with emails or usernames to send to
+    + invitation_type (string, optional) - Type of invite to send. default value "joinmig" invites to migme. Other option is 'games'
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
+    + Body
+
+            {
+                "invite": "example@example.com,another@example.com",
+                "invitation_type": "joinmig"
+            }
+
++ Response 200 (application/json)
+
+            {
+                "success": true
+            }
+
+
+# Group Events
+
+## Game Events [/events]
+### Send events[POST]
+
++ Attributes
+    + type (string, required) - Type of event. GAME_STARTED/GAME_ITEM_PURCHASED/GAME_WON
+    + amount (number, required) - For GAME_STARTED/GAME_WON, should be the amount of money (in cents) or credit the user spent (or earned) on the game each time. For GAME_ITEM_PURCHASED should be the total amount the user spent in purchasing the items.
+    + game_vendor (string, required) - Game Vendor
+    + game_ref (string, required) - Game reference id
+    + player_name (string, required) - Player's name. (note: Should be getting from access token)
+    + quantity (number, required) - Item quantity the user has purchased (used for GAME\_ITEM_PURCHASED)
+    + item_ref (string, required) - Name or reference id of item purchased (used for GAME ITEM PURCHASED)
+    + purchase_ref (string, required) - Reference code stored for future tracking of the purchase (used for GAME ITEM PURCHASED)
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "success": true
+            }
+
+
+# Group Chat
+
+## Chatrooms [/chatrooms]
+### Get specific chatroom [GET /{id}]
+**Needs to be updated from name to id**
+
++ Parameters
+
+    + id (string, required) - Id of chatroom
+
++ Response 200 (application/json)
+
+            {
+                "adult_only": false,
+                "name": "Campus Life EN",
+                "id": "7134967",
+                "allow_kicking": false,
+                "maximum_size": 80,
+                "creator": "migme",
+                "date_last_accessed": "2014-12-15T00:00:00.000Z",
+                "user_owned": true,
+                "status": "ACTIVE",
+                "language": "ENG",
+                "allow_user_keywords": false,
+                "allow_bots": true,
+                "type": "CHATROOM",
+                "group_id": "379180",
+                "date_created": 1349086483,
+                "description": "English Friend Finder Chatroom",
+                "size": 0
+            }
+
+### Get a chatroom's details [GET /{id}/details]
+**Needs to be updated from name to id**
+
++ Parameters
+
+    + id (string, required) - Id of chatroom
+
++ Response 200 (application/json)
+
+            {
+                "adult_only": false,
+                "name": "Campus Life EN",
+                "id": "7134967",
+                "allow_kicking": false,
+                "maximum_size": 80,
+                "creator": {
+                    "id": "141664822",
+                    "username": "migme",
+                    "date_registered": "2006-02-17",
+                    "country": "Maldives",
+                    "about_me": null,
+                    "alias": null,
+                    "first_name": null,
+                    "last_name": null,
+                    "date_of_birth": "1991-02-10",
+                    "gender": "M",
+                    "mig_level": 135,
+                    "mig_bot_image": "miglevel-135",
+                    "total_emoticon_packs": 1,
+                    "status_message": "www.mig.me",
+                    "state": null,
+                    "city": null,
+                    "relationship": 1,
+                    "companies": null,
+                    "schools": null,
+                    "interests": null,
+                    "hometown": null,
+                    "email": "example@example.com",
+                    "email_verified": true,
+                    "display_picture_type": 1,
+                    "labels": {
+                        "is_verified": false,
+                        "admin": "GA",
+                        "merchant": "N"
+                    },
+                    "about_me_verified": null,
+                    "account_type": 1,
+                    "account_verified": -1,
+                    "post_privacy": "EVERYONE",
+                    "chat_privacy": "EVERYONE",
+                    "user_relationship": null,
+                    "mobile_phone": "9607825132",
+                    "mobile_verified": true,
+                    "avatar_head_uuid": "ZHkxFsgmfkZDJTkDFWgRtw49IxU9Q-",
+                    "avatar_body_uuid": "ZkxFsgmfkZDJTkDFWgRtw49IxU9Q-",
+                    "total_groups_joined": 9,
+                    "total_gifts_received": 10085,
+                    "total_mig_photos_uploaded": 14,
+                    "total_chatrooms_owned": 427,
+                    "total_avatar_votes_received": 152,
+                    "total_avatar_comments_received": 0,
+                    "total_footprints_received": 7,
+                    "total_user_likes_received": 1224,
+                    "total_games_played": 4
+                },
+                "date_last_accessed": 1429520503,
+                "user_owned": true,
+                "status": "ACTIVE",
+                "language": "ENG",
+                "allow_user_keywords": false,
+                "allow_bots": true,
+                "type": "CHATROOM",
+                "group_id": "379180",
+                "date_created": 1349086483,
+                "description": "English Friend Finder Chatroom",
+                "size": 0,
+                "moderators": [
+                    {
+                        "id": "158387441",
+                        "username": "best_g",
+                        "date_registered": "2009-12-02",
+                        "country": "Nepal",
+                        "about_me": "Find me @baby sweet time",
+                        "alias": null,
+                        "first_name": "Rajen",
+                        "last_name": "",
+                        "date_of_birth": "1990-06-07",
+                        "gender": "M",
+                        "mig_level": 147,
+                        "mig_bot_image": "miglevel-147",
+                        "total_emoticon_packs": 21,
+                        "status_message": "Hey",
+                        "state": "Nepal",
+                        "city": "Kakarvitta",
+                        "relationship": 1,
+                        "companies": "Working as a teaching staff at sharda shishu sadan",
+                        "schools": "North point higher secondary english school n Providence",
+                        "interests": "In helping users at mig33!",
+                        "hometown": null,
+                        "email": "example@example.com",
+                        "email_verified": true,
+                        "display_picture_type": 1,
+                        "labels": {
+                            "is_verified": false,
+                            "admin": "GA",
+                            "merchant": "N"
+                        },
+                        "about_me_verified": null,
+                        "account_type": 1,
+                        "account_verified": -1,
+                        "post_privacy": "EVERYONE",
+                        "chat_privacy": "EVERYONE",
+                        "mobile_verified": true,
+                        "avatar_head_uuid": "ZHJVPXmmeJCV600w.UbhIyBqH9bhU-",
+                        "avatar_body_uuid": "ZJVPXmmeJCV600w.UbhIyBqH9bhU-",
+                        "total_groups_joined": 365,
+                        "total_gifts_received": 23583,
+                        "total_mig_photos_uploaded": 254,
+                        "total_chatrooms_owned": 30,
+                        "total_avatar_votes_received": 2507,
+                        "total_avatar_comments_received": 51,
+                        "total_footprints_received": 2,
+                        "total_user_likes_received": 981,
+                        "total_games_played": 24
+                    }
+                ]
+            }
+
+### Create a chatroom [POST]
+Not implemented
++ Attributes
+    + name (string, required) - Name of chatroom
+    + description (string, required) - Description of chatroom
+    + keywords (string, optional) - Separated by commas
+    + language: ENG (string, required) - Primary language of chatroom
+    + allow_kicking: true (boolean, required) - Allow users to kick other users
+
++ Request
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
+    + Body
+
+            {
+                "name": "Campus Life EN",
+                "description": "English Friend Finder Chatroom",
+                "keywords": "campus, friend, finder",
+                "language": "ENG"
+            }
+
++ Response 200 (application/json)
+
+            {
+                "adult_only": false,
+                "name": "Campus Life EN",
+                "id": "7134967",
+                "allow_kicking": false,
+                "maximum_size": 80,
+                "creator": "migme",
+                "date_last_accessed": "2014-12-15T00:00:00.000Z",
+                "user_owned": true,
+                "status": "ACTIVE",
+                "language": "ENG",
+                "allow_user_keywords": false,
+                "allow_bots": true,
+                "type": "CHATROOM",
+                "group_id": "379180",
+                "date_created": 1349086483,
+                "description": "English Friend Finder Chatroom",
+                "size": 0
+            }
+
+
+# Group Trending
+## Trending topics [/trending{?limit,country,cursor}]
+### Get trending topics [GET]
+
++ Parameters
+
+    + limit (number, optional) - Max amount to return
+    + country (string, optional) - Two Character Country ISO Code
+    + cursor (string, optional) - Cursor in results
+
++ Response 200 (application/json)
+
+        {
+            "total": 7,
+            "trending": [
+                {
+                    "#healthtips": {
+                        "count": 2147483647,
+                        "name": "#healthtips",
+                        "type": "TermFacet"
+                    }
+                },
+                {
+                    "#migmyday": {
+                        "count": 2147483647,
+                        "name": "#migmyday",
+                        "type": "TermFacet"
+                    }
+                },
+                {
+                    "#lovebyte": {
+                        "count": 2147483647,
+                        "name": "#lovebyte",
+                        "type": "TermFacet"
+                    }
+                },
+                {
+                    "#foodloverscommunity": {
+                        "count": 2147483647,
+                        "name": "#foodloverscommunity",
+                        "type": "TermFacet"
+                    }
+                },
+                {
+                    "#migUp": {
+                        "count": 2147483647,
+                        "name": "#migUp",
+                        "type": "TermFacet"
+                    }
+                },
+                {
+                    "#cwc15": {
+                        "count": 2147483647,
+                        "name": "#cwc15",
+                        "type": "TermFacet"
+                    }
+                },
+                {
+                    "#MyPhotography": {
+                        "count": 2147483647,
+                        "name": "#MyPhotography",
+                        "type": "TermFacet"
+                    }
+                }
+            ]
+        }
+
+
+# Group Banners
+Not really needed as an API endpoint. (Consider removing)
+## Banners [/banners]
+### Get list of banners [GET]
+
++ Response 200 (application/json)
+
+        {
+            "banners": [
+                {
+                    "placement": "homefeed",
+                    "image_url": "http://b-img.cdn.mig.me/i/5b66/7dc3a5872639925f0a0083c43d04489f8fab/1428406416444",
+                    "url": "http://discover.mig.me/2015/04/07/wanted-juicy-news-newsy-gossip"
+                },
+                {
+                    "placement": "homefeed",
+                    "image_url": "http://b-img.cdn.mig.me/i/5b66/7dc3a5872639925f0a0083c43d04489f8fab/1428636423432",
+                    "url": "http://discover.mig.me/2015/04/09/megamodel-wild-card"
+                },
+                {
+                    "placement": "homefeed",
+                    "image_url": "http://b-img.cdn.mig.me/i/5b66/7dc3a5872639925f0a0083c43d04489f8fab/1429173838755",
+                    "url": "http://discover.mig.me/2015/04/16/mig-team-contest"
+                }
+            ]
+        }
+
+
+# Group Languages
+
+## Languages [/languages]
+### Get list of languages [GET]
+
++ Response 200 (application/json)
+
+        {
+            "languages": [
+                {
+                    "name": "Arabic",
+                    "code": "ARA"
+                },
+                {
+                    "name": "Bengali",
+                    "code": "BEN"
+                },
+                {
+                    "name": "German",
+                    "code": "DEU"
+                },
+                {
+                    "name": "English",
+                    "code": "ENG"
+                },
+                {
+                    "name": "French",
+                    "code": "FRA"
+                },
+                {
+                    "name": "Hebrew",
+                    "code": "HEB"
+                },
+                {
+                    "name": "Hindi",
+                    "code": "HIN"
+                },
+                {
+                    "name": "Indonesian",
+                    "code": "IND"
+                },
+                {
+                    "name": "Javanese",
+                    "code": "JAV"
+                },
+                {
+                    "name": "Punjabi",
+                    "code": "PAN"
+                },
+                {
+                    "name": "Spanish",
+                    "code": "SPA"
+                },
+                {
+                    "name": "Vietnamese",
+                    "code": "VIE"
+                },
+                {
+                    "name": "Chinese",
+                    "code": "ZHO"
+                }
+            ]
+        }
+
+# Group Location
+The value should follow ISO 3166-1 alpha-2
+## Locale [/location]
+### Get device Locale [GET]
+
++ Response 200 (application/json)
+
+        {
+            "country":  "ID"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "error": {
+                "code": 404,
+                "type": "Not Found",
+                "message": "Failed to resolve the IP address to a country"
+            }
+        }
+
+### Get device IP [GET /location/ip]
+
++ Response 200 (application/json)
+
+        {
+            "ip":  "X.X.X.X"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "error": {
+                "code": 404,
+                "type": "Not Found",
+                "message": "Failed to resolve the IP address to a country"
+            }
+        }
+
+
+# Group Upload
+## Upload [/upload]
+### Upload a file [POST]
+
++ Request (multipart/form-data; boundary=---BOUNDARY)
+    -----BOUNDARY
+    Content-Disposition: form-data; name="file"; filename="image.jpg"
+    Content-Type: image/jpeg
+    -----BOUNDARY
+
+    + Headers
+
+            Authorization: Bearer ACCESS_TOKEN
+
++ Response 200 (application/json)
+
+            {
+                "thumbnail": "http://b-img.cdn.mig.me/i/1660/dc125e160c78f620ddff203df0a8f4e0eb31df59ce1da53faa90191649d3/1443427541292_200x",
+                "url": "http://b-img.cdn.mig.me/i/1660/dc125e160c78f620ddff203df0a8f4e0eb31df59ce1da53faa90191649d3/1443427541292"
+            }
+
++ Response 401 (application/json)
+
+            {
+                "error": {
+                    "code": 401,
+                    "message": "You are not authenticated to upload"
+                }
+            }
+
++ Response 413 (application/json)
+
+            {
+                "error": {
+                    "code": 413,
+                    "message": "Unable to upload file. Max upload file size exceeded."
+                }
+            }
+
++ Response 415 (application/json)
+
+            {
+                "error": {
+                    "code": 415,
+                    "message": "Unsupported Media Type"
+                }
+            }
